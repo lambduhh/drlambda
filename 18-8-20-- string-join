@@ -1,0 +1,113 @@
+#lang racket
+
+(define add3
+  (λ (a)
+    (λ (b)
+      (λ (c)
+        (+ a b c)))))
+
+(((add3 1) 3) 5)
+
+(define table1-λ1 (add3 1))
+(define table2-λ2 (table1-λ1 3))
+(define put-it-all-together-λ3 (table2-λ2 5))
+
+put-it-all-together-λ3
+
+
+(define add
+  (λ (c b)
+    (+ c b)))
+
+(define sub
+  (λ (c b)
+    (- c b)))
+    
+
+
+(define integer
+  (λ (c)
+    (λ (cmd b)
+      (if (eq? cmd "add")
+          (+ b c )
+          (if (eq? cmd "sub")
+              (- b c )
+              "no command found"
+              )))))
+
+
+(define integerrr
+  (λ (a)
+    (define addd
+      (λ (b)
+        (+ a b)))
+    (define subb
+      (λ (b)
+        (- a b)))
+    (λ (cmd arg)
+      (if (eq? cmd "addd")
+          (addd arg)
+          (if (eq? cmd "subb")
+                   (subb arg)
+                   "not found")))))
+
+(define string-join
+  (lambda (ls delim)
+  (define out (open-output-string))
+    "Join list of strings together by delim into one string."
+    (let loop ((ls ls))
+      (if (null? (cdr ls))
+          (begin
+            (display (car ls) out)
+            (get-output-string out))
+          (begin
+            (display (car ls) out)
+            (display delim out)
+            (loop (cdr ls)))))))
+
+
+(define name
+  (λ (a)
+    (define firsty-lasty
+      (λ (a b)
+        (string-append a b)))
+    (λ (cmd b)
+      (if (eq? cmd "combine")
+          (firsty-lasty a b)
+          "don't combine"))))
+
+
+(define names (name "john"))
+(names "combine" "doe")
+
+
+
+
+
+
+
+
+        
+    
+
+
+
+
+
+
+
+
+
+
+
+         
+(define int2 (integer 2))
+(int2 "add" 3)
+
+
+
+
+
+
+          
+     

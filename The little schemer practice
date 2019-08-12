@@ -1,0 +1,21 @@
+#lang racket
+
+;; write a function (lat?) with the following considerations
+;; takes one list (x) as an arguement
+;; every lat is a list of atoms
+;; lat does not contain nested lists
+;;(lat? '()) = true  bc '() does not contain a list..
+
+;; lat is a list that does not contain a list
+
+
+(define (atom? x)
+    (and (not (pair? x)) (not (null? x))))
+
+
+(define (lat? x)
+  (cond ((null? x) #t)
+        ((atom? (car x)) (lat? (cdr x)))
+        (else #f)))
+
+(lat? '("harry"))

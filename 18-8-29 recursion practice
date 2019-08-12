@@ -1,0 +1,329 @@
+#lang racket
+;;write a recursive function that returns a list recursively
+
+(define (my-ls ls)
+  (if (null? ls)
+      '()
+      (cons (car ls) (my-ls (cdr ls) ))))
+
+
+;; (add-1-to-list '(1 2 3 4 5)) ;; (2 3 4 5 6)
+;; (add-1-to-list (range 3)) ;; (1 2 3)
+;; make a function (add-1-to-list) that takes a list (ls) as an arg and returns a list that
+;; has + 1 to each number
+
+(define (add1 x)
+  (+ 1 x))
+
+(define (add-1-to-ls ls)
+  (if (null? ls)
+      '()
+      (cons (add1 (car ls)) (add-1-to-ls (cdr ls)))))
+
+(add-1-to-ls '(1 2 3))
+(add-1-to-ls (range 3))
+
+;;(add-n-to-list 5 (range 3)) ;; '(5 6 7)
+;;(add-n-to-list 0 (range 3)) ;; '(0 1 2) -- same as (range 3)
+;;(add-n-to-list 0 '(3 5 7))     ;; '(4 6 8)
+;;(add-n-t-list 5 '(8 12 20 25)) ;; '(13 17 25 30)
+;; make a function (add-n-to-list) that takes 2 args, a list (ls) and a number (n)
+;; and adds n to each number in the list
+
+(define (add-n-to-ls n ls)
+  (if (null? ls)
+      '()
+      (cons (+ n (car ls)) (add-n-to-ls n (cdr ls)))))
+
+(add-n-to-ls 5 (range 3))
+(add-n-to-ls 0 '(3 5 7))
+
+;(apply-f-to-list add-1 '(1 2 3)) ;; '(2 3 4)
+;(apply-f-to-list range '(1 2 3)) ;; '((0) (0 1) (0 1 2))
+;; write a function (apply-f-to-ls) that takes 2 args, a function (f) and applys it to a list (ls)
+
+(define (add-f-to-ls f ls)
+  (cond
+    ((null? ls) '())
+    ((cons (f (car ls)) (add-f-to-ls f (cdr ls))))))
+
+(add-f-to-ls add1 '(1 2 3))
+
+
+(define (mul5 x)
+  (* 5 x))
+(add-f-to-ls mul5 '(5 10))
+(println 'map)
+(map add1 '(1 2))
+
+;;(false-if-null-else-x '(1 '() 3 4)) ;; -> '(1 #f 3 4)
+;; make a function (f-if-null-else-x) that takes a list (ls) as an arg and returns the same list
+;; with #f instead of '()
+
+(define (f-if-null ls)
+  (cond
+    ((null? ls) '())
+    ((null? (car ls)) (cons #f (f-if-null (cdr ls))))
+    ((cons (car ls) (f-if-null (cdr ls))))))
+
+    
+(f-if-null '(1 () 3 5))
+
+;;(f-if-one '(1 () 3 4)) ;; --> '(#f () 3 4)
+;;make a function (f-if-one) that takes a list (ls) as an arg and returns the same list
+;; with #f instead of 1
+
+(define (f-if-one ls)
+  (cond
+    ((null? ls) '())
+    ((eq? (car ls) 1) (cons #f (f-if-one (cdr ls))))
+    ((cons (car ls) (f-if-one (cdr ls))))
+    ))
+
+
+(f-if-one '(1 90 () 3 1))
+
+;;(f-if-λ (λ (x) (eqv? x 1)) '(1 () 2 3)) ;; --> '(#f () 2 3)
+
+;;(f-if-λ null? '(1 () 2 3)) ;; --> '(1 #f 2 3)
+;; make a function (f-if-λ) that takes a function (λ) and a list (ls) as arguments
+;; and if function returns true than the item is false. otherwise return item
+
+
+
+(define (f-if-fn fn ls)
+  (cond
+    ((null? ls) '())
+    ((fn (car ls)) (cons #f (f-if-fn fn (cdr ls))))
+    ((cons (car ls) (f-if-fn fn (cdr ls))))
+    ))
+          
+(f-if-fn null? '(2 () 4 2))
+(f-if-fn (λ (x) (eqv? x 1)) '(1 2 3))
+
+;;(keep-not-null '(1 () 3 4 ())) ;; --> '(1 3 4)
+;; make a function (keep-not-null) takes a list (ls) as an arg and returns list-'()
+
+(define (keep-not-null ls)
+  (cond
+    ((null? ls) '())
+    ((null? (car ls)) (keep-not-null (cdr ls)))
+    ((cons (car ls) (keep-not-null (cdr ls))))
+    ))
+
+(keep-not-null '(1 () 2 3))
+
+
+
+;; make function (keep-if-fn) that takes a function (fn) and a ls (ls) as an arg
+;; and keeps element if fn is true and discards if fn returns false
+
+(display "keep-if-fn aka FILTER \n")
+
+;; filter -- friend of map
+(define (keep-if-fn fn ls)
+  (cond
+    ((null? ls) '())
+    ((fn (car ls))    (cons (car ls) (keep-if-fn fn (cdr ls))))
+    ((keep-if-fn fn (cdr ls)))
+    ))
+                        
+
+(keep-if-fn (λ (x) (eqv? x 1)) '(1 2 3))
+
+(filter null? '(1 () 2 () () ())) 
+
+;; write function (count) that takes a list (ls)
+;; as an arg and returns the number of items on the ls
+;;(count '(1 2 3 4)) ;; --> 4
+;;(count '((1 2) (3 4)) ;; --> 2
+
+(define (count ls)
+  (if (null? ls)
+      0
+      (+ 1 (count (cdr ls)))))
+     
+(count '(5))
+
+;; write function (reverse-x) that takes a list (ls) and reverses it 
+;;(reverse-x '(1 2 3)) ;;=> (3 2 1)
+
+;(define (reverse-x ls)
+;  (rev-x ls '()))
+;
+;(define (rev-x ls rls)
+;  (cond
+;    ((null? ls) rls)
+;    ((rev-x (cdr ls) (cons (car ls) rls)))
+;    ))
+;;^^^ first answer.. but what you want to do is have it all in one function if you can
+;; and so the following is correct
+
+
+(define (reverse-x ls)
+  (define (rev-x ls rls)
+	(cond
+	 ((null? ls) rls)
+	 ((rev-x (cdr ls) (cons (car ls) rls)))))
+  (rev-x ls '()))
+
+
+(reverse-x '(1 2 3))
+
+;;(double-list '(1 2 3) '()) ;;-> (1 1 2 2 3 3)
+;; write a function (double-trouble) that takes 2 args (ls and '() ) and makes a list that doubles
+;; each value
+
+(define (double ls rls)
+  (if (null? ls)
+       '()
+       (cons (car ls) (cons (car ls) (double (cdr ls) rls)))))
+
+(println '(double-trouble))
+(double '(1 2 3) '() )
+
+;;(weave '(1 2 3) '(4 5 6)) ;;
+;;=> (1 4 2 5 3 6)
+;; write fn (weave) that takes 2 args (ls fck) and weaves them together to make one list
+(println 'weave)
+
+(define (weave ls fck)
+  (if (null? ls)
+      '()
+      (cons (car ls) (cons (car fck) (weave (cdr ls) (cdr fck))))
+      ))
+
+(weave '(1 2 3) '(4 5 6))
+
+;;(weave '(1 2 3) '())
+;;=> ()
+;;(weave '(1 2 3) '(4 5))
+;;=> (1 4 2 5)
+; write fn (wev) that takes 2 args (ls fck) and weaves them together to make one list and allows
+; one list to be longer than another
+
+(define (wevd ls fck)
+  (cond
+    ((null? ls) '())
+    ((null? fck) '())
+    ((cons (car ls) (cons (car fck) (wevd (cdr ls) (cdr fck)))))
+    ))
+
+
+(wevd '(1 2 3) '(4 5 ))
+(wevd '(1 2 3 4) '(2))
+
+;;(partition '(1 2 3 4)) ;;=> ((1 2) (3 4))
+;;(partition '()) ;;=> ()
+;;(partition '(1 2 3 4 5)) ;;=> ((1 2) (3 4) (5))
+; write fn (moses) that takes a (ls) as an arg and breaks it up into many little lists
+
+
+;; a fn (mos) that takes 2 args (ls fck) and returns a different fn (moses) with arg (fck)
+(define (moses ls)
+  (mos ls '()))
+
+;; list '(1 2 3) is (cons 1 (cons 2 (cons 3 '())))
+
+(define (mos ls fck)
+  (cond
+    ((null? ls) '())
+    ((= 1 (length ls)) (cons (cons (car ls) '()) '()))
+    ((cons
+      (cons (car ls) (cons (cadr ls) '()))
+      (mos (cdr ls) '()) ))
+    ))
+
+(println '(moses))
+(moses '(1 2 3 4 5))
+
+;;;(flatten '((1 2) (3 4) (5 6 7 8))) ;;=> (1 2 3 4 5 6 7 8)
+;(flatten '() ) ;;=> '()
+;(flatten '(()) ) ;;=> '()
+;(flatten '(() ()) ) ;;=> '()
+;(flatten '((1 2) () (3 4)) ) ;;=> (1 2 3 4)
+;; write a fn (flat) that takes a list (ls) as an arg (that possibly contains many lists) and converts
+;; into one big list
+(define (flatten ls)
+  (flat ls '()))
+
+
+(define (flat ls)
+  (cond
+    ((null? ls) '())
+    ((list? (car ls)) (append (car ls) (flat (cdr ls)) ))
+    ))
+
+(flat '((1 2) (3 4) (5 6 7 8)))
+
+;; (appendo '(1 2 3) '(4 5 6) '(3 4 5)) ;;=> (1 2 3 4 5 6 3 4 5)
+;  write a function (app) that takes muliple lists as arguments and sews them together
+;(define (sew . *args)
+;
+;    (define (sew2 a b res)
+;       ;; this should combine a and b into one list res
+;       )
+;
+;    (define (sew-all args res)
+;       ;; if args are empty return res
+;       ;; otherwise res is (sew2 (car args) res)
+;       ;; and args is (cdr args)
+;       )
+;
+;   (sew-all *args '()))
+
+(define (sew2 a b res)
+  (cond
+    ((null? a) b)
+    ((let* ((first-thing (car a))
+            (rest-of-a (cdr a))
+            (rest (sew2 rest-of-a b '())))
+       (cons first-thing rest)    ))))
+    
+(define (sew-all args res)
+  (cond
+    ((null? args) res)
+    ((let* ((new-args (cdr args))
+            (new-res (sew2 (car args) res '())))
+
+      (sew-all new-args new-res))))
+    )
+(sew-all (reverse-x ' ((1 2) (3 4) (5 6))) '())
+
+(define (sew . args)
+  (let* ((reverse-args (reverse-x args)))
+    (sew-all reverse-args '())))
+
+(sew '(1 2) '(3 4) '(5 6))
+
+;(weave) ;;=> ()
+;(weave '(1 2 3) '(4 5 6) '(7 8 9)) ;;=> (1 4 7 2 5 8 3 6 9)
+;
+;;; the weave stops when any of the lists are empty
+;(weave '(1 2 3) '() '(2 3)) ;;=> ()
+;
+;(weave '(1 2 3) '(4) '(5 6 7)) ;;=> (1 5 2)
+
+               
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

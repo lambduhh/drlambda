@@ -1,0 +1,49 @@
+#lang racket
+;(weave) ;;=> ()
+;(weave '(1 2 3) '(4 5 6) '(7 8 9)) ;;=> (1 4 7 2 5 8 3 6 9)
+;
+;;; the weave stops when any of the lists are empty
+;(weave '(1 2 3) '() '(2 3)) ;;=> ()
+;
+;(weave '(1 2 3) '(4) '(5 6 7)) ;;=> (1 4 5)
+;; a function (inweave) that takes any number of lists as args (.ls) and weaves them together, but
+; stops at the end of the shortest list
+
+(define (wevd ls fck) ; weave w 2 args (allows a list to be longer than another)
+  (cond
+    ((null? ls) '())
+    ((null? fck) '())
+    ((cons (car ls) (cons (car fck) (wevd (cdr ls) (cdr fck))))))) 
+
+(define (weave ls fck) ;weave w 2 args
+  (if (null? ls)
+      '()
+      (cons (car ls) (cons (car fck) (weave (cdr ls) (cdr fck))))))
+
+;this interlev function takes a (any?) as a utility function to change the base case (if any lists
+; are empty than (any? null? = true) and we end recursion with '()
+(define (interlev . args)
+  (cond
+    ((any? null? args) '())
+    ((let ((newcars (map car args))  ; (map takes car out of every args and makes a new result=newcars
+           (newcdrs (map cdr args))) ; (same thing for cdr args)
+       (append newcars (apply interlev newcdrs))))))  ;(append) > (cons) to create ONE list as answer
+
+; utility function called (any?) that analyzes args to see if any are #t? and if so, the
+; whole function returns #t
+(define (any? pred args)
+    (let ((args? (map pred args)))   ; (args?)= map takes fn (pred) and recurses down list of args
+       (not (null? (filter true? args?)))))  ; if map returns #t for any args? than pred = #t 
+
+(define (true? x) ; true? = #t
+  (eq? #t x))
+
+(any? null? '( (1 2) (a b)))
+
+(interlev '(1 2) '(4 5 j) '(a b))
+
+
+
+
+       
+       
